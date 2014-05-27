@@ -104,7 +104,7 @@ namespace SimpleBlog.Areas.Admin.Controllers
             if (user == null)
                 return HttpNotFound();
 
-            user.Username = form.Username;
+            form.Username=user.Username;
 
             if (!ModelState.IsValid)
                 return View(form);

@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace SimpleBlog.Infrastructure
 {
-    public class TransactionFilter:IActionFilter
+    public class TransactionFilter : IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
