@@ -18,8 +18,8 @@ namespace SimpleBlog.Areas.Admin.Controllers
         {
             var totalPostCount = Database.Session.Query<Post>().Count();
             var currentPostPage = Database.Session.Query<Post>()
-                .OrderBy(c => c.CreatedAt)
-                .Skip((page - 1)*PostsPerPage)
+                .OrderByDescending(c => c.CreatedAt)
+                .Skip((page - 1) * PostsPerPage)
                 .Take(PostsPerPage)
                 .ToList();
 
@@ -92,6 +92,43 @@ namespace SimpleBlog.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
 
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Trash(int id)
+        {
+            var post = Database.Session.Load<Post>(id);
+
+            if (post == null)
+                return HttpNotFound();
+
+            post.DeletedAt = DateTime.UtcNow;
+            Database.Session.Update(post);
+
+            return RedirectToAction("index");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            var post = Database.Session.Load<Post>(id);
+            if (post == null)
+                return HttpNotFound();
+
+            Database.Session.Delete(post);
+            return RedirectToAction("index");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Restore(int id)
+        {
+            var post = Database.Session.Load<Post>(id);
+            if (post == null)
+                return HttpNotFound();
+
+            post.DeletedAt = null;
+            Database.Session.Update(post);
+            return RedirectToAction("index");
         }
     }
 

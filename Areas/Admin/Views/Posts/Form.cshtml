@@ -6,23 +6,23 @@
 {
     if (!Model.IsNew)
     {
-         @Html.HiddenFor(f => f.PostId)
+    @Html.HiddenFor(f => f.PostId)
     }
     
     @Html.AntiForgeryToken()
     
-    <div class="row"> 
+    <div class="row">
         <div class="col-lg-8">
-           @Html.ValidationSummary()
+            @Html.ValidationSummary()
             <div class="form-group">
                 @Html.LabelFor(f => f.Title)
                 @Html.TextBoxFor(f => f.Title, new { @class = "form-control" })
             </div>
-           
+
             <div class="form-group">
-                
+
                 @Html.LabelFor(f => f.Slug)
-                @Html.TextBoxFor(f => f.Slug, new { @class = "form-control" })
+                @Html.TextBoxFor(f => f.Slug, new { @class = "form-control", data_slug = "#Title" })
             </div>
             <div class="form-group">
                 @Html.LabelFor(f => f.Content)
