@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using NHibernate.Mapping;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
@@ -22,6 +21,11 @@ namespace SimpleBlog.Models
         public virtual DateTime? DeletedAt { get; set; }
 
         public virtual IList<Tag> Tags { get; set; }
+         
+        public Post()
+        {
+            Tags = new List<Tag>();
+        }
 
         public virtual bool IsDeleted
         {
