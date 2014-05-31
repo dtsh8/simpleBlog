@@ -14,15 +14,25 @@ namespace SimpleBlog.Areas.Admin.Controllers
     [SelectedTab("posts")]
     public class PostsController : Controller
     {
-        private const int PostsPerPage = 5;
+        private const int PostsPerPage = 10;
 
         public ActionResult Index(int page = 1)
         {
             var totalPostCount = Database.Session.Query<Post>().Count();
-            var currentPostPage = Database.Session.Query<Post>()
-                .OrderByDescending(c => c.CreatedAt)
+
+            var baseQuery = Database.Session.Query<Post>().OrderByDescending(c => c.CreatedAt);
+
+            var postIds = baseQuery
                 .Skip((page - 1) * PostsPerPage)
                 .Take(PostsPerPage)
+                .Select(p => p.Id)
+                .ToArray();
+
+            var currentPostPage = baseQuery
+                .Where(p => postIds.Contains(p.Id))
+                .FetchMany(f => f.Tags)
+                .Fetch(f => f.User)
+
                 .ToList();
 
             return View(new PostsIndex
@@ -67,7 +77,7 @@ namespace SimpleBlog.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidateInput(false)]
         public ActionResult Form(PostsForm form)
         {
             form.IsNew = form.PostId == null;
@@ -155,7 +165,7 @@ namespace SimpleBlog.Areas.Admin.Controllers
 
         private IEnumerable<Tag> ReconsileTags(IEnumerable<TagCheckBox> tags)
         {
-            foreach (var tag in tags.Where(t=>t.IsChecked))
+            foreach (var tag in tags.Where(t => t.IsChecked))
             {
                 if (tag.Id != null)
                 {
