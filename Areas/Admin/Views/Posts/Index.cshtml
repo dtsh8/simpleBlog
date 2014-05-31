@@ -61,7 +61,7 @@
             <tr class="@cls">
                 <td>@post.Title</td>
                 <td>@post.User.Username</td>
-                <td>@post.Tags</td>
+                <td>@string.Join(", ", post.Tags.Select(t=>t.Name))</td>
                 <td>@post.CreatedAt</td>
                 <td>
                     <a href="@Url.Action("edit", new{post.Id})" class ="btn btn-xs btn-primary">
